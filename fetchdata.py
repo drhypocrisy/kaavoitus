@@ -35,17 +35,32 @@ def clean_address(str):
 
 if __name__ == '__main__':
     # url = 'https://asunnot.oikotie.fi/myytavat-asunnot'
-    url = ['https://asunnot.oikotie.fi/myytavat-asunnot?pagination=1&locations=%5B%5B14734,5,%2200610,' \
+    # Käpylä
+    url = [['https://asunnot.oikotie.fi/myytavat-asunnot?pagination=1&locations=%5B%5B14734,5,%2200610,' \
          '%20Helsinki%22%5D%5D&cardType=100&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2010',
-           'https://asunnot.oikotie.fi/myytavat-asunnot?pagination=2&locations=%5B%5B14734,5,%2200610,' \
+            "Helsinki"],
+           ['https://asunnot.oikotie.fi/myytavat-asunnot?pagination=2&locations=%5B%5B14734,5,%2200610,' \
            '%20Helsinki%22%5D%5D&cardType=100&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2010',
-           'https://asunnot.oikotie.fi/myytavat-asunnot?pagination=3&locations=%5B%5B14734,5,%2200610,' \
-           '%20Helsinki%22%5D%5D&cardType=100&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2010']
+           "Helsinki"],
+           ['https://asunnot.oikotie.fi/myytavat-asunnot?pagination=3&locations=%5B%5B14734,5,%2200610,' \
+           '%20Helsinki%22%5D%5D&cardType=100&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2010',
+            "Helsinki"]]
+    # Valkeakoski
+    url += [['https://asunnot.oikotie.fi/myytavat-uudisasunnot?pagination=1&habitationType%5B%5D=1&locations=%5B%5B76,'
+           '6,%22Hämeenlinna%22%5D%5D&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2018&cardType=200',
+             "Valkeakoski"],
+            ['https://asunnot.oikotie.fi/myytavat-uudisasunnot?pagination=2&habitationType%5B%5D=1&locations=%5B%5B76,'
+           '6,%22Hämeenlinna%22%5D%5D&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2018&cardType=200',
+             "Valkeakoski"],
+            ['https://asunnot.oikotie.fi/myytavat-uudisasunnot?pagination=3&habitationType%5B%5D=1&locations=%5B%5B76,'
+           '6,%22Hämeenlinna%22%5D%5D&buildingType%5B%5D=1&buildingType%5B%5D=256&constructionYear%5Bmin%5D=2018&cardType=200',
+             "Valkeakoski"]
+            ]
 
     driver = webdriver.Safari()
     data = []
     for ind, u in enumerate(url):
-        driver.get(u)
+        driver.get(u[0])
         try:
             WebDriverWait(driver, 20).until(EC.frame_to_be_available_and_switch_to_it(
                 (By.CSS_SELECTOR, "iframe[src^='https://cdn.privacy-mgmt.com/index']")))
@@ -66,12 +81,12 @@ if __name__ == '__main__':
             a = clean_number(area.text)
             add = clean_address(address.text)
             price_area = float(p) / float(a)
-            data.append([add, p, a, str(price_area)])
+            data.append([u[1], add, p, a, str(price_area)])
             # print(add, p, a, price_area)
             # cards = driver.find_element_by_xpath(house_card)
     with open('asunnot.csv', 'w') as f:
         # header
-        f.write('address, price, size, price_per_area\n')
+        f.write('city, address, price, size, price_per_area\n')
         for d in data:
             f.write(','.join(d) + '\n')
 

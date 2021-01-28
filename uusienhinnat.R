@@ -5,9 +5,10 @@ library(tidyr)
 
 data <- read.csv('asunnot.csv') %>%
   mutate(
-    street = word(address, 1)
+    street = paste0(city, ", ", word(address, 1))
   )
-data$street <- word(data$address, 1)
+
+data$street[grepl("Valkeakoski", data$street)] = "Valkeakoski"
 
 means <- data %>%
   group_by(street) %>%
